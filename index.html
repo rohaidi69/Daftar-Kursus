@@ -21,7 +21,7 @@
     <input type="text" name="nama" placeholder="Nama Pelajar" required>
     <input type="text" name="matrik" placeholder="No Matriks" required>
     <input type="text" name="nokp" placeholder="No Kad Pengenalan" required>
-    <input type="text" name="notel" placeholder="No Telefon" required>
+    <input type="tel" name="notel" placeholder="No Telefon" required pattern="[0-9]{10,12}">
     <input type="email" name="emel" placeholder="Alamat Emel" required>
     <textarea name="alamat" placeholder="Alamat Rumah" required></textarea>
 
@@ -90,6 +90,7 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
   })
   .then(res => res.json())
   .then(response => {
+    document.getElementById("status").innerText = "Sedang menghantar...";
     document.getElementById("status").innerText = "Pendaftaran berjaya dihantar!";
     form.reset();
     kursusCount = 1;
