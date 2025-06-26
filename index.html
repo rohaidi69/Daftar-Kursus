@@ -36,6 +36,20 @@
     <p id="status"></p>
   </form>
 </div>
+  
+<!-- Tambah di dalam <body> seperti sebelum ini -->
+<div id="paparanSemula" style="display:none; background:#e0f7fa; padding:20px; margin-top:30px; border-radius:10px;">
+  <h3>Pengesahan Pendaftaran</h3>
+  <p><strong>Nama:</strong> <span id="outNama"></span></p>
+  <p><strong>No Matriks:</strong> <span id="outMatrik"></span></p>
+  <p><strong>No KP:</strong> <span id="outNoKP"></span></p>
+  <p><strong>No Tel:</strong> <span id="outNoTel"></span></p>
+  <p><strong>Emel:</strong> <span id="outEmel"></span></p>
+  <p><strong>Alamat:</strong> <span id="outAlamat"></span></p>
+  <p><strong>Kursus Didaftarkan:</strong>
+    <ul id="outKursus"></ul>
+  </p>
+</div>
 
 <script>
 let kursusCount = 1;
@@ -57,7 +71,7 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
 
   const form = e.target;
   const data = {
-    nama: form.nama.value,
+    nama: form.nama.value, 
     matrik: form.matrik.value,
     nokp: form.nokp.value,
     notel: form.notel.value,
