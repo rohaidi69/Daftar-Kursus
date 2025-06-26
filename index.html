@@ -71,7 +71,7 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
 
   const form = e.target;
   const data = {
-    nama: form.nama.value, 
+    nama: form.nama.value,
     matrik: form.matrik.value,
     nokp: form.nokp.value,
     notel: form.notel.value,
@@ -80,50 +80,46 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
     kursus: Array.from(form.querySelectorAll('input[name="kursus[]"]')).map(i => i.value).slice(0, 5)
   };
 
-  // GANTI dengan URL Web App Google Script anda di sini:
-  const scriptURL = "https://script.google.com/macros/s/AKfycbzJJmNgpvl2iW1qYTTDjEUaltoi9uaOB77s15vm5YSs-cf1257w8ZkFT7xzgwi0KpOv/exec/exec";
+  // Gantikan URL berikut dengan URL sebenar dari Google Apps Script anda
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzJJmNgpvl2iW1qYTTDjEUaltoi9uaOB77s15vm5YSs-cf1257w8ZkFT7xzgwi0KpOv/exec";
 
   fetch(scriptURL, {
-  method: "POST",
-  body: JSON.stringify(data),
-  headers: { "Content-Type": "application/json" }
-})
-.then(res => res.json())
-.then(response => {
-  document.getElementById("status").innerText = "Pendaftaran berjaya dihantar!";
-  form.reset();
-  kursusCount = 1;
-  document.getElementById("kursusContainer").innerHTML = '<input type="text" name="kursus[]" placeholder="Kod & Nama Kursus 1" required>';
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.json())
+  .then(response => {
+    document.getElementById("status").innerText = "Pendaftaran berjaya dihantar!";
+    form.reset();
+    kursusCount = 1;
+    document.getElementById("kursusContainer").innerHTML = '<input type="text" name="kursus[]" placeholder="Kod & Nama Kursus 1" required>';
 
-  // Papar semula data
-  document.getElementById("outNama").innerText = response.nama;
-  document.getElementById("outMatrik").innerText = response.matrik;
-  document.getElementById("outNoKP").innerText = response.nokp;
-  document.getElementById("outNoTel").innerText = response.notel;
-  document.getElementById("outEmel").innerText = response.emel;
-  document.getElementById("outAlamat").innerText = response.alamat;
+    // Papar semula data
+    document.getElementById("outNama").innerText = response.nama;
+    document.getElementById("outMatrik").innerText = response.matrik;
+    document.getElementById("outNoKP").innerText = response.nokp;
+    document.getElementById("outNoTel").innerText = response.notel;
+    document.getElementById("outEmel").innerText = response.emel;
+    document.getElementById("outAlamat").innerText = response.alamat;
 
-  const kursusList = document.getElementById("outKursus");
-  kursusList.innerHTML = "";
-  response.kursus.forEach(k => {
-    if (k.trim() !== "") {
-      const li = document.createElement("li");
-      li.innerText = k;
-      kursusList.appendChild(li);
-    }
+    const kursusList = document.getElementById("outKursus");
+    kursusList.innerHTML = "";
+    response.kursus.forEach(k => {
+      if (k.trim() !== "") {
+        const li = document.createElement("li");
+        li.innerText = k;
+        kursusList.appendChild(li);
+      }
+    });
+
+    document.getElementById("paparanSemula").style.display = "block";
+  })
+  .catch(error => {
+    document.getElementById("status").innerText = "Ralat semasa menghantar pendaftaran.";
+    console.error(error);
   });
-
-  document.getElementById("paparanSemula").style.display = "block";
-})
-.catch(error => {
-  document.getElementById("status").innerText = "Ralat semasa menghantar pendaftaran.";
-  console.error(error);
 });
-
-  document.getElementById("paparanSemula").style.display = "block";
-})
- });
 </script>
-
 </body>
 </html>
