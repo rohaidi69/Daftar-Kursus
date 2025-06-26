@@ -81,7 +81,7 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
   };
 
   // GANTI dengan URL Web App Google Script anda di sini:
-  const scriptURL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzJJmNgpvl2iW1qYTTDjEUaltoi9uaOB77s15vm5YSs-cf1257w8ZkFT7xzgwi0KpOv/exec/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzJJmNgpvl2iW1qYTTDjEUaltoi9uaOB77s15vm5YSs-cf1257w8ZkFT7xzgwi0KpOv/exec/exec";
 
   fetch(scriptURL, {
   method: "POST",
@@ -122,11 +122,7 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
 
   document.getElementById("paparanSemula").style.display = "block";
 })
-  .catch(error => {
-    document.getElementById("status").innerText = "Ralat semasa menghantar pendaftaran.";
-    console.error(error);
-  });
-});
+ });
 </script>
 
 </body>
