@@ -81,9 +81,9 @@ document.getElementById("daftarForm").addEventListener("submit", function(e) {
   };
 
   // Gantikan URL berikut dengan URL sebenar dari Google Apps Script anda
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxccyBWPP0qAeuGhM8ZYh-uPGGNO_jV1me4bz397Zi65p8UEFwxnDBe7Bl8m6YHxJNK/exec";
-
-  fetch(scriptURL, {
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzJJmNgpvl2iW1qYTTDjEUaltoi9uaOB77s15vm5YSs-cf1257w8ZkFT7xzgwi0KpOv/exec";
+                     
+ fetch(scriptURL, {
     method: "POST",
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" }
