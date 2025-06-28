@@ -37,7 +37,6 @@
   </form>
 </div>
   
-<!-- Tambah di dalam <body> seperti sebelum ini -->
 <div id="paparanSemula" style="display:none; background:#e0f7fa; padding:20px; margin-top:30px; border-radius:10px;">
   <h3>Pengesahan Pendaftaran</h3>
   <p><strong>Nama:</strong> <span id="outNama"></span></p>
@@ -51,76 +50,91 @@
   </p>
 </div>
 
-<script>
-let kursusCount = 1;
-const maxKursus = 5;
+<script type="module">
+  // Import the functions you need from the Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
-function tambahKursus() {
-  if (kursusCount >= maxKursus) return alert("Maksimum 5 kursus sahaja.");
-  const container = document.getElementById("kursusContainer");
-  const input = document.createElement("input");
-  input.type = "text";
-  input.name = "kursus[]";
-  input.placeholder = `Kod & Nama Kursus ${kursusCount + 1}`;
-  container.appendChild(input);
-  kursusCount++;
-}
-
-document.getElementById("daftarForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const form = e.target;
-  const data = {
-    nama: form.nama.value,
-    matrik: form.matrik.value,
-    nokp: form.nokp.value,
-    notel: form.notel.value,
-    emel: form.emel.value,
-    alamat: form.alamat.value,
-    kursus: Array.from(form.querySelectorAll('input[name="kursus[]"]')).map(i => i.value).slice(0, 5)
+  // TODO: Gantikan dengan konfigurasi Firebase projek anda sendiri
+  const firebaseConfig = {
+    apiKey: "Ganti_Dengan_YOUR_API_KEY",
+    authDomain: "Ganti_Dengan_YOUR_AUTH_DOMAIN",
+    projectId: "Ganti_Dengan_YOUR_PROJECT_ID",
+    storageBucket: "Ganti_Dengan_YOUR_STORAGE_BUCKET",
+    messagingSenderId: "Ganti_Dengan_YOUR_MESSAGING_SENDER_ID",
+    appId: "Ganti_Dengan_YOUR_APP_ID"
   };
 
-  // Gantikan URL berikut dengan URL sebenar dari Google Apps Script anda
-  const scriptURL = "https://script.google.com/macros/s/AKfycbw0w28RHBIgm-kfEpBPPIPo2ESGQnWn5U-e_MKct0s/dev";
-                     
- fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  })
-  .then(res => res.json())
-  .then(response => {
-    document.getElementById("status").innerText = "Sedang menghantar...";
-    document.getElementById("status").innerText = "Pendaftaran berjaya dihantar!";
-    form.reset();
-    kursusCount = 1;
-    document.getElementById("kursusContainer").innerHTML = '<input type="text" name="kursus[]" placeholder="Kod & Nama Kursus 1" required>';
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    // Papar semula data
-    document.getElementById("outNama").innerText = response.nama;
-    document.getElementById("outMatrik").innerText = response.matrik;
-    document.getElementById("outNoKP").innerText = response.nokp;
-    document.getElementById("outNoTel").innerText = response.notel;
-    document.getElementById("outEmel").innerText = response.emel;
-    document.getElementById("outAlamat").innerText = response.alamat;
+  let kursusCount = 1;
+  const maxKursus = 5;
 
-    const kursusList = document.getElementById("outKursus");
-    kursusList.innerHTML = "";
-    response.kursus.forEach(k => {
-      if (k.trim() !== "") {
+  window.tambahKursus = function() { // Gunakan window.tambahKursus agar dapat diakses dari onclick HTML
+    if (kursusCount >= maxKursus) return alert("Maksimum 5 kursus sahaja.");
+    const container = document.getElementById("kursusContainer");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "kursus[]";
+    input.placeholder = `Kod & Nama Kursus ${kursusCount + 1}`;
+    input.required = true; // Tambah required attribute
+    container.appendChild(input);
+    kursusCount++;
+  }
+
+  document.getElementById("daftarForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const statusElement = document.getElementById("status");
+    statusElement.innerText = "Sedang menghantar...";
+
+    const data = {
+      nama: form.nama.value,
+      matrik: form.matrik.value,
+      nokp: form.nokp.value,
+      notel: form.notel.value,
+      emel: form.emel.value,
+      alamat: form.alamat.value,
+      kursus: Array.from(form.querySelectorAll('input[name="kursus[]"]')).map(i => i.value).filter(value => value.trim() !== '').slice(0, 5), // Pastikan kursus yang kosong tidak dihantar
+      tarikhHantar: new Date() // Tambah timestamp
+    };
+
+    try {
+      // Tambah dokumen baru ke koleksi 'pendaftaran_kursus'
+      const docRef = await addDoc(collection(db, "pendaftaran_kursus"), data);
+      
+      statusElement.innerText = "Pendaftaran berjaya dihantar!";
+      form.reset();
+      kursusCount = 1;
+      document.getElementById("kursusContainer").innerHTML = '<input type="text" name="kursus[]" placeholder="Kod & Nama Kursus 1" required>';
+
+      // Papar semula data
+      document.getElementById("outNama").innerText = data.nama;
+      document.getElementById("outMatrik").innerText = data.matrik;
+      document.getElementById("outNoKP").innerText = data.nokp;
+      document.getElementById("outNoTel").innerText = data.notel;
+      document.getElementById("outEmel").innerText = data.emel;
+      document.getElementById("outAlamat").innerText = data.alamat;
+
+      const kursusList = document.getElementById("outKursus");
+      kursusList.innerHTML = "";
+      data.kursus.forEach(k => { // Gunakan data.kursus yang telah difilter
         const li = document.createElement("li");
         li.innerText = k;
         kursusList.appendChild(li);
-      }
-    });
+      });
 
-    document.getElementById("paparanSemula").style.display = "block";
-  })
-  .catch(error => {
-    document.getElementById("status").innerText = "Ralat semasa menghantar pendaftaran.";
-    console.error(error);
+      document.getElementById("paparanSemula").style.display = "block";
+      console.log("Dokumen berjaya ditulis dengan ID: ", docRef.id);
+
+    } catch (error) {
+      statusElement.innerText = "Ralat semasa menghantar pendaftaran. Sila cuba lagi.";
+      console.error("Ralat menambah dokumen: ", error);
+    }
   });
-});
 </script>
 </body>
 </html>
