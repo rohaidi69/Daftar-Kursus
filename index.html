@@ -99,8 +99,7 @@
       emel: form.emel.value,
       alamat: form.alamat.value,
       kursus: Array.from(form.querySelectorAll('input[name="kursus[]"]')).map(i => i.value).filter(value => value.trim() !== '').slice(0, 5), // Pastikan kursus yang kosong tidak dihantar
-      tarikhHantar: new Date() // Tambah timestamp
-    };
+      };
 
     try {
       // Tambah dokumen baru ke koleksi 'pendaftaran_kursus'
